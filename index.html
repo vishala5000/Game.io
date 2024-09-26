@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Promote Your YouTube Shorts</title>
+    <title>Watch My YouTube Shorts</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -44,23 +44,15 @@
             margin-top: 20px;
             border: none;
         }
-        .share-buttons {
-            margin-top: 20px;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Promote Your YouTube Shorts</h1>
+        <h1>Watch My YouTube Shorts</h1>
         <p>Enter your YouTube Shorts video link below:</p>
         <input type="text" id="videoLink" placeholder="https://www.youtube.com/shorts/VIDEO_ID">
         <button onclick="loadVideo()">Load Video</button>
         <div id="videoContainer"></div>
-        <div class="share-buttons" id="shareButtons" style="display: none;">
-            <h3>Share This Video!</h3>
-            <button onclick="shareOnFacebook()">Share on Facebook</button>
-            <button onclick="shareOnTwitter()">Share on Twitter</button>
-        </div>
     </div>
 
     <script>
@@ -68,32 +60,18 @@
             const videoLink = document.getElementById('videoLink').value;
             const videoId = videoLink.split('/').pop(); // Extract the video ID
             const videoContainer = document.getElementById('videoContainer');
-            const shareButtons = document.getElementById('shareButtons');
 
             if (videoId) {
                 videoContainer.innerHTML = `
                     <iframe 
-                        src="https://www.youtube.com/embed/${videoId}" 
+                        src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1" 
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                         allowfullscreen>
                     </iframe>
                 `;
-                shareButtons.style.display = 'block'; // Show share buttons
             } else {
                 alert("Please enter a valid YouTube Shorts link.");
             }
-        }
-
-        function shareOnFacebook() {
-            const videoLink = document.getElementById('videoLink').value;
-            const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(videoLink)}`;
-            window.open(shareUrl, '_blank');
-        }
-
-        function shareOnTwitter() {
-            const videoLink = document.getElementById('videoLink').value;
-            const shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(videoLink)}&text=Check out this YouTube Shorts video!`;
-            window.open(shareUrl, '_blank');
         }
     </script>
 </body>
