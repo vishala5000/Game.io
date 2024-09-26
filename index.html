@@ -3,99 +3,295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Promote Your YouTube Shorts</title>
+    <title>Tic-Tac-Toe</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
             margin: 0;
-            padding: 20px;
-            text-align: center;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            overflow: hidden;
+            animation: backgroundColorChange 8s ease infinite;
         }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        
+        @keyframes backgroundColorChange {
+            0% {
+                background-color: #ff7e5f;
+            }
+            25% {
+                background-color: #feb47b;
+            }
+            50% {
+                background-color: #86a8e7;
+            }
+            75% {
+                background-color: #91eae4;
+            }
+            100% {
+                background-color: #ff7e5f;
+            }
         }
-        input[type="text"] {
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 10px;
+            max-width: 350px;
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            animation: fadeIn 0.5s ease-in-out;
         }
-        button {
-            padding: 10px 20px;
-            background-color: #ff0000;
-            color: white;
-            border: none;
-            border-radius: 4px;
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            background-color: #fff;
+            border: 3px solid #333;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
         }
-        button:hover {
-            background-color: #e60000;
+
+        .cell:hover {
+            background-color: #f0f0f0;
+            transform: scale(1.05);
         }
-        .share-buttons {
+
+        .cell.taken {
+            cursor: not-allowed;
+            background-color: #61dafb;
+            transition: background-color 0.3s;
+        }
+
+        .cell.clicked {
+            animation: cellClick 0.3s ease-in-out;
+        }
+
+        .message {
             margin-top: 20px;
+            font-size: 1.5rem;
+            animation: fadeIn 0.5s ease-in-out;
+            opacity: 0;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #555;
+            transform: scale(1.05);
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            animation: rippleEffect 0.6s linear;
+        }
+
+        @keyframes rippleEffect {
+            0% {
+                transform: scale(0);
+            }
+            100% {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .cell {
+                width: 70px;
+                height: 70px;
+                font-size: 2rem;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes cellClick {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .winner {
+            animation: pulse 0.5s infinite;
+            background-color: #ffd700; /* Gold color for winning cells */
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Watch and Share My YouTube Shorts</h1>
-        <p>Enter your YouTube Shorts video link below:</p>
-        <input type="text" id="videoLink" placeholder="https://www.youtube.com/shorts/VIDEO_ID">
-        <button onclick="loadVideo()">Load Video</button>
-        <div id="videoContainer"></div>
-        <div class="share-buttons" id="shareButtons" style="display: none;">
-            <h3>Share This Video!</h3>
-            <button onclick="share('facebook')">Share on Facebook</button>
-            <button onclick="share('twitter')">Share on Twitter</button>
-            <button onclick="share('linkedin')">Share on LinkedIn</button>
-        </div>
-    </div>
+    <h1>Tic-Tac-Toe</h1>
+    <div class="board" id="board"></div>
+    <div class="message" id="message"></div>
+    <button id="restart">Restart Game</button>
 
     <script>
-        function loadVideo() {
-            const videoLink = document.getElementById('videoLink').value;
-            const videoId = videoLink.split('/').pop();
-            const videoContainer = document.getElementById('videoContainer');
-            const shareButtons = document.getElementById('shareButtons');
+        const board = document.getElementById('board');
+        const message = document.getElementById('message');
+        const restartButton = document.getElementById('restart');
 
-            if (videoId) {
-                videoContainer.innerHTML = `
-                    <iframe 
-                        src="https://www.youtube.com/embed/${videoId}" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen>
-                    </iframe>
-                `;
-                shareButtons.style.display = 'block';
-            } else {
-                alert("Please enter a valid YouTube Shorts link.");
-            }
+        let currentPlayer = 'X';
+        let gameBoard = ['', '', '', '', '', '', '', '', ''];
+        let gameActive = true;
+
+        const winningConditions = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6],
+        ];
+
+        function createBoard() {
+            gameBoard.forEach((cell, index) => {
+                const cellElement = document.createElement('div');
+                cellElement.classList.add('cell');
+                cellElement.addEventListener('click', () => handleCellClick(index, cellElement));
+                board.appendChild(cellElement);
+            });
         }
 
-        function share(platform) {
-            const videoLink = document.getElementById('videoLink').value;
-            let shareUrl = '';
+        function handleCellClick(index, cellElement) {
+            if (gameBoard[index] !== '' || !gameActive) return;
 
-            switch(platform) {
-                case 'facebook':
-                    shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(videoLink)}`;
-                    break;
-                case 'twitter':
-                    shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(videoLink)}&text=Check out this YouTube Shorts video!`;
-                    break;
-                case 'linkedin':
-                    shareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(videoLink)}&title=Watch my YouTube Shorts`;
-                    break;
-            }
-            window.open(shareUrl, '_blank');
+            gameBoard[index] = currentPlayer;
+            cellElement.classList.add('clicked');
+            setTimeout(() => {
+                cellElement.classList.remove('clicked');
+            }, 300);
+            renderBoard();
+            checkResult();
         }
+
+        function renderBoard() {
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach((cell, index) => {
+                cell.textContent = gameBoard[index];
+                if (gameBoard[index] !== '') {
+                    cell.classList.add('taken');
+                }
+            });
+        }
+
+        function checkResult() {
+            let roundWon = false;
+            for (let i = 0; i < winningConditions.length; i++) {
+                const [a, b, c] = winningConditions[i];
+                if (gameBoard[a] === '' || gameBoard[b] === '' || gameBoard[c] === '') continue;
+                if (gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c]) {
+                    roundWon = true;
+                    highlightWinner([a, b, c]);
+                    break;
+                }
+            }
+
+            if (roundWon) {
+                message.textContent = `Player ${currentPlayer} wins! 🎉`;
+                fadeInMessage(message);
+                gameActive = false;
+                return;
+            }
+
+            if (!gameBoard.includes('')) {
+                message.textContent = 'It\'s a draw! 🤝';
+                fadeInMessage(message);
+                gameActive = false;
+                return;
+            }
+
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            message.textContent = `Current Player: ${currentPlayer}`;
+            fadeInMessage(message);
+        }
+
+        function fadeInMessage(msgElement) {
+            msgElement.style.opacity = '1';
+            setTimeout(() => {
+                msgElement.style.opacity = '0';
+            }, 3000);
+        }
+
+        function highlightWinner(winningCells) {
+            winningCells.forEach(index => {
+                const cells = document.querySelectorAll('.cell');
+                cells[index].classList.add('winner');
+            });
+        }
+
+        restartButton.addEventListener('click', (event) => {
+            createRipple(event);
+            location.reload();  // Refresh the page to restart the game
+        });
+
+        function createRipple(event) {
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            const rect = event.target.getBoundingClientRect();
+            ripple.style.width = ripple.style.height = Math.max(rect.width, rect.height) + 'px';
+            ripple.style.left = event.clientX - rect.left - ripple.offsetWidth / 2 + 'px';
+            ripple.style.top = event.clientY - rect.top - ripple.offsetHeight / 2 + 'px';
+            event.target.appendChild(ripple);
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        }
+
+        createBoard();
+        message.textContent = `Current Player: ${currentPlayer}`;
+        fadeInMessage(message);
     </script>
 </body>
 </html>
