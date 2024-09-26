@@ -17,19 +17,18 @@
         h1 {
             color: #333;
         }
-        input, button {
-            padding: 10px;
-            margin: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
         button {
-            background-color: #28a745;
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
             color: white;
             cursor: pointer;
+            font-size: 16px;
         }
         button:hover {
-            background-color: #218838;
+            background-color: #0056b3;
         }
         .suggestions {
             margin-top: 20px;
@@ -39,35 +38,31 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             width: 100%;
             max-width: 400px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
 <h1>YouTube Shorts Upload Time Suggestion Tool</h1>
-<input type="text" id="channelName" placeholder="Enter Your Channel Name">
-<button onclick="suggestTimes()">Get Suggested Times</button>
+<button onclick="showSuggestedTimes()">Get Suggested Times</button>
 
 <div class="suggestions" id="suggestions"></div>
 
 <script>
-    function suggestTimes() {
-        const channelName = document.getElementById('channelName').value;
+    function showSuggestedTimes() {
         const suggestionsDiv = document.getElementById('suggestions');
-        
-        // Placeholder logic for suggestions
-        if (channelName) {
-            const currentTime = new Date();
-            const bestTimes = [
-                new Date(currentTime.getTime() + 2 * 60 * 60 * 1000), // 2 hours later
-                new Date(currentTime.getTime() + 4 * 60 * 60 * 1000), // 4 hours later
-                new Date(currentTime.getTime() + 6 * 60 * 60 * 1000), // 6 hours later
-                new Date(currentTime.getTime() + 12 * 60 * 60 * 1000), // 12 hours later
-            ];
-            suggestionsDiv.innerHTML = "<h2>Suggested Times:</h2>" + bestTimes.map(time => `<p>${time.toLocaleString()}</p>`).join('');
-        } else {
-            suggestionsDiv.innerHTML = "<p>Please enter a valid channel name.</p>";
-        }
+
+        // Suggested upload times (example times)
+        const suggestedTimes = [
+            "12:00 PM - 1:00 PM",
+            "3:00 PM - 4:00 PM",
+            "7:00 PM - 9:00 PM",
+            "10:00 PM - 11:00 PM"
+        ];
+
+        suggestionsDiv.innerHTML = "<h2>Suggested Times to Upload:</h2>" + 
+            suggestedTimes.map(time => `<p>${time}</p>`).join('');
     }
 </script>
 
