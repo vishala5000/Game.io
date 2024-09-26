@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watch My YouTube Shorts</title>
+    <title>Promote Your YouTube Shorts</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -38,40 +38,63 @@
         button:hover {
             background-color: #e60000;
         }
-        iframe {
-            width: 100%;
-            height: 315px;
+        .share-buttons {
             margin-top: 20px;
-            border: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Watch My YouTube Shorts</h1>
+        <h1>Watch and Share My YouTube Shorts</h1>
         <p>Enter your YouTube Shorts video link below:</p>
         <input type="text" id="videoLink" placeholder="https://www.youtube.com/shorts/VIDEO_ID">
         <button onclick="loadVideo()">Load Video</button>
         <div id="videoContainer"></div>
+        <div class="share-buttons" id="shareButtons" style="display: none;">
+            <h3>Share This Video!</h3>
+            <button onclick="share('facebook')">Share on Facebook</button>
+            <button onclick="share('twitter')">Share on Twitter</button>
+            <button onclick="share('linkedin')">Share on LinkedIn</button>
+        </div>
     </div>
 
     <script>
         function loadVideo() {
             const videoLink = document.getElementById('videoLink').value;
-            const videoId = videoLink.split('/').pop(); // Extract the video ID
+            const videoId = videoLink.split('/').pop();
             const videoContainer = document.getElementById('videoContainer');
+            const shareButtons = document.getElementById('shareButtons');
 
             if (videoId) {
                 videoContainer.innerHTML = `
                     <iframe 
-                        src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1" 
+                        src="https://www.youtube.com/embed/${videoId}" 
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                         allowfullscreen>
                     </iframe>
                 `;
+                shareButtons.style.display = 'block';
             } else {
                 alert("Please enter a valid YouTube Shorts link.");
             }
+        }
+
+        function share(platform) {
+            const videoLink = document.getElementById('videoLink').value;
+            let shareUrl = '';
+
+            switch(platform) {
+                case 'facebook':
+                    shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(videoLink)}`;
+                    break;
+                case 'twitter':
+                    shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(videoLink)}&text=Check out this YouTube Shorts video!`;
+                    break;
+                case 'linkedin':
+                    shareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(videoLink)}&title=Watch my YouTube Shorts`;
+                    break;
+            }
+            window.open(shareUrl, '_blank');
         }
     </script>
 </body>
