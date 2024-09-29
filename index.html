@@ -3,295 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic-Tac-Toe</title>
+    <title>YouTube Keyword Research Tool</title>
     <style>
         body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
             margin: 0;
-            font-family: 'Arial', sans-serif;
-            color: #333;
-            overflow: hidden;
-            animation: backgroundColorChange 8s ease infinite;
+            padding: 20px;
         }
-        
-        @keyframes backgroundColorChange {
-            0% {
-                background-color: #ff7e5f;
-            }
-            25% {
-                background-color: #feb47b;
-            }
-            50% {
-                background-color: #86a8e7;
-            }
-            75% {
-                background-color: #91eae4;
-            }
-            100% {
-                background-color: #ff7e5f;
-            }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 0.5s ease-in-out;
+            color: #333;
+            text-align: center;
         }
 
-        .board {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-gap: 10px;
-            max-width: 350px;
+        input {
             width: 100%;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        .cell {
-            width: 100px;
-            height: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            background-color: #fff;
-            border: 3px solid #333;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-
-        .cell:hover {
-            background-color: #f0f0f0;
-            transform: scale(1.05);
-        }
-
-        .cell.taken {
-            cursor: not-allowed;
-            background-color: #61dafb;
-            transition: background-color 0.3s;
-        }
-
-        .cell.clicked {
-            animation: cellClick 0.3s ease-in-out;
-        }
-
-        .message {
-            margin-top: 20px;
-            font-size: 1.5rem;
-            animation: fadeIn 0.5s ease-in-out;
-            opacity: 0;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
 
         button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 1rem;
-            background-color: #333;
-            color: #fff;
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            transition: background-color 0.3s, transform 0.3s;
+            font-size: 16px;
         }
 
         button:hover {
-            background-color: #555;
-            transform: scale(1.05);
+            background-color: #45a049;
         }
 
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.7);
-            animation: rippleEffect 0.6s linear;
+        .results {
+            margin-top: 20px;
         }
 
-        @keyframes rippleEffect {
-            0% {
-                transform: scale(0);
-            }
-            100% {
-                transform: scale(4);
-                opacity: 0;
-            }
-        }
-
-        @media (max-width: 400px) {
-            .cell {
-                width: 70px;
-                height: 70px;
-                font-size: 2rem;
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes cellClick {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-        }
-
-        .winner {
-            animation: pulse 0.5s infinite;
-            background-color: #ffd700; /* Gold color for winning cells */
+        .result-item {
+            background-color: #e7f3fe;
+            margin: 5px 0;
+            padding: 10px;
+            border-left: 5px solid #2196F3;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
-    <h1>Tic-Tac-Toe</h1>
-    <div class="board" id="board"></div>
-    <div class="message" id="message"></div>
-    <button id="restart">Restart Game</button>
-
+    <div class="container">
+        <h1>YouTube Keyword Research Tool</h1>
+        <input type="text" id="keywordInput" placeholder="Enter keyword..." />
+        <button id="searchButton">Search</button>
+        <div id="results" class="results"></div>
+    </div>
     <script>
-        const board = document.getElementById('board');
-        const message = document.getElementById('message');
-        const restartButton = document.getElementById('restart');
+        document.getElementById('searchButton').addEventListener('click', async () => {
+            const keyword = document.getElementById('keywordInput').value;
+            const resultsContainer = document.getElementById('results');
 
-        let currentPlayer = 'X';
-        let gameBoard = ['', '', '', '', '', '', '', '', ''];
-        let gameActive = true;
+            // Clear previous results
+            resultsContainer.innerHTML = '';
 
-        const winningConditions = [
-            [0, 1, 2],
-            [3, 4, 5],
-            [6, 7, 8],
-            [0, 3, 6],
-            [1, 4, 7],
-            [2, 5, 8],
-            [0, 4, 8],
-            [2, 4, 6],
-        ];
-
-        function createBoard() {
-            gameBoard.forEach((cell, index) => {
-                const cellElement = document.createElement('div');
-                cellElement.classList.add('cell');
-                cellElement.addEventListener('click', () => handleCellClick(index, cellElement));
-                board.appendChild(cellElement);
-            });
-        }
-
-        function handleCellClick(index, cellElement) {
-            if (gameBoard[index] !== '' || !gameActive) return;
-
-            gameBoard[index] = currentPlayer;
-            cellElement.classList.add('clicked');
-            setTimeout(() => {
-                cellElement.classList.remove('clicked');
-            }, 300);
-            renderBoard();
-            checkResult();
-        }
-
-        function renderBoard() {
-            const cells = document.querySelectorAll('.cell');
-            cells.forEach((cell, index) => {
-                cell.textContent = gameBoard[index];
-                if (gameBoard[index] !== '') {
-                    cell.classList.add('taken');
-                }
-            });
-        }
-
-        function checkResult() {
-            let roundWon = false;
-            for (let i = 0; i < winningConditions.length; i++) {
-                const [a, b, c] = winningConditions[i];
-                if (gameBoard[a] === '' || gameBoard[b] === '' || gameBoard[c] === '') continue;
-                if (gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c]) {
-                    roundWon = true;
-                    highlightWinner([a, b, c]);
-                    break;
-                }
-            }
-
-            if (roundWon) {
-                message.textContent = `Player ${currentPlayer} wins! 🎉`;
-                fadeInMessage(message);
-                gameActive = false;
+            if (!keyword) {
+                alert('Please enter a keyword!');
                 return;
             }
 
-            if (!gameBoard.includes('')) {
-                message.textContent = 'It\'s a draw! 🤝';
-                fadeInMessage(message);
-                gameActive = false;
+            // Fetch keyword suggestions from a free keyword suggestion API (example)
+            const response = await fetch(`https://api.keywordtool.io/v2/search/suggestions?apikey=YOUR_API_KEY&keyword=${keyword}&type=youtube`);
+            
+            if (!response.ok) {
+                alert('Failed to fetch data. Please try again later.');
                 return;
             }
 
-            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-            message.textContent = `Current Player: ${currentPlayer}`;
-            fadeInMessage(message);
-        }
-
-        function fadeInMessage(msgElement) {
-            msgElement.style.opacity = '1';
-            setTimeout(() => {
-                msgElement.style.opacity = '0';
-            }, 3000);
-        }
-
-        function highlightWinner(winningCells) {
-            winningCells.forEach(index => {
-                const cells = document.querySelectorAll('.cell');
-                cells[index].classList.add('winner');
-            });
-        }
-
-        restartButton.addEventListener('click', (event) => {
-            createRipple(event);
-            location.reload();  // Refresh the page to restart the game
+            const data = await response.json();
+            if (data.results && data.results.length > 0) {
+                data.results.forEach(result => {
+                    const div = document.createElement('div');
+                    div.className = 'result-item';
+                    div.textContent = result.keyword;
+                    resultsContainer.appendChild(div);
+                });
+            } else {
+                resultsContainer.innerHTML = '<p>No results found.</p>';
+            }
         });
-
-        function createRipple(event) {
-            const ripple = document.createElement('span');
-            ripple.classList.add('ripple');
-            const rect = event.target.getBoundingClientRect();
-            ripple.style.width = ripple.style.height = Math.max(rect.width, rect.height) + 'px';
-            ripple.style.left = event.clientX - rect.left - ripple.offsetWidth / 2 + 'px';
-            ripple.style.top = event.clientY - rect.top - ripple.offsetHeight / 2 + 'px';
-            event.target.appendChild(ripple);
-            setTimeout(() => {
-                ripple.remove();
-            }, 600);
-        }
-
-        createBoard();
-        message.textContent = `Current Player: ${currentPlayer}`;
-        fadeInMessage(message);
     </script>
 </body>
 </html>
